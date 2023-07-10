@@ -19,3 +19,8 @@
 
 # Go workspace file
 go.work
+
+#
+url-monitor
+url-monitor.exe
+main.exe

@@ -1,0 +1,1 @@
+go build -o url-monitor monitor/main.go
