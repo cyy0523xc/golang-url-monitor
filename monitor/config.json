@@ -1,15 +1,33 @@
 [
     {
-        "url": "http://",
+        "url": "https://www.baidu.com"
+    },
+    {
+        "url": "http://engine.extract.doc.api.eyedmp.com/api/v1/version",
         "fields": [
-            {"key": "", "values": ""}
+            {"key": "version"}
         ]
     },
     {
-        "url": "http://",
+        "url": "http://ocr.cv.api.eyedmp.com/heartbeat",
+        "fields": [
+            {"key": "status", "values": [true]},
+            {"key": "gpu_status", "values": [true]}
+        ]
+    },
+    {
+        "url": "http://ocr.cv.api.eyedmp.com/heartbeat",
         "any": true,
         "fields": [
-            {"key": "", "values": ""}
+            {"key": "status", "values": [true]},
+            {"key": "gpu_status", "values": [true]}
+        ]
+    },
+    {
+        "url": "http://ocr.cv.api.eyedmp.com/heartbeat",
+        "fields": [
+            {"key": "status", "values": [true]},
+            {"key": "hello", "values": ["world"]}
         ]
     }
 ]
