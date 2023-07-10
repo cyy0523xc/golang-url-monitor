@@ -1,0 +1,15 @@
+[
+    {
+        "url": "http://",
+        "fields": [
+            {"key": "", "values": ""}
+        ]
+    },
+    {
+        "url": "http://",
+        "any": true,
+        "fields": [
+            {"key": "", "values": ""}
+        ]
+    }
+]
