@@ -3,6 +3,9 @@
         "url": "https://www.baidu.com"
     },
     {
+        "url": "https://www.baidu.com/hello"
+    },
+    {
         "url": "http://engine.extract.doc.api.eyedmp.com/api/v1/version",
         "fields": [
             {"key": "version"}

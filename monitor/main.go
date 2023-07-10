@@ -6,7 +6,6 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -42,10 +41,19 @@ type URLConfig struct {
 	fmtFields []FmtField // 格式化后的字段
 }
 
+// 接口请求响应值的标注化格式
 type RespDict map[string]string
 
+// 检测不通过的URL
+type ErrUrl struct {
+	Url string `json:"url"` //
+	Msg string `json:"msg"` // 错误信息
+}
+
+var errUrls []ErrUrl
+
 func main() {
-	// println("开始检测url，配置文件: ", configFile)
+	errUrls = []ErrUrl{}
 	data, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		panic(fmt.Errorf("配置文件%s读取出错: %s", configFile, err.Error()))
@@ -75,6 +83,12 @@ func main() {
 		// fmt.Printf("配置数据：%+v\n", url)
 		checkURL(&url)
 	}
+	errBytes, err := json.Marshal(errUrls)
+	if err != nil {
+		panic(fmt.Errorf("转换成json出错: %s", err.Error()))
+	}
+	errText := string(errBytes)
+	fmt.Println(errText)
 }
 
 // 如果fields为空，则只要状态码为200则算通过
@@ -85,6 +99,7 @@ func checkURL(url *URLConfig) {
 	err, resp, text := request(url)
 	if err != nil {
 		errPrint(url, err.Error())
+		return
 	}
 	if len(url.fmtFields) == 0 {
 		// 如果fields为空，则只要状态码为200则算通过
@@ -109,7 +124,7 @@ func checkURL(url *URLConfig) {
 		// 所有条件都满足
 		return
 	}
-	errPrint(url, text)
+	errPrint(url, fmt.Sprintf("响应值(%s)和配置值(%v)不匹配", text, url.Fields))
 }
 
 // 请求url并格式化返回值
@@ -135,7 +150,7 @@ func request(url *URLConfig) (err error, respDict RespDict, text string) {
 	}
 	// 监控http状态码
 	if !inList(resp.StatusCode) {
-		err = fmt.Errorf("响应状态码%d错误：%x", resp.StatusCode, okStatusList)
+		err = fmt.Errorf("响应状态码%d错误，正确状态码：%v", resp.StatusCode, okStatusList)
 		return
 	}
 	if url.fmtFields != nil {
@@ -193,7 +208,11 @@ func checkField(field *FmtField, resp RespDict) (ok bool) {
 }
 
 // 触发url检测异常输出
-func errPrint(url *URLConfig, respText string) {
-	fmt.Printf("异常URL: %s\n====> %s\n", url.Url, respText)
-	os.Exit(1)
+func errPrint(url *URLConfig, msg string) {
+	fmt.Printf("异常URL: %s\n====> %s\n", url.Url, msg)
+	errUrl := ErrUrl{
+		Url: url.Url,
+		Msg: msg,
+	}
+	errUrls = append(errUrls, errUrl)
 }
